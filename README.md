@@ -2,7 +2,7 @@
 It is a QQ bot by User670. It has limited features, but per the Mirai framework licensing, I have to open-source this project if I want to provide features to other people. I don't have much choices.
 
 # Usage
-- Setup Mirai ( https://github.com/mamoe/mirai ) following its instructions.
+- Setup Mirai ( https://github.com/mamoe/mirai ) following its instructions. You also need the HTTP API.
 - Setup Nonebot ( https://github.com/nonebot/nonebot ) following its instructions. Make sure you install `pip install "nonebot[scheduler]"` when you install the dependencies.
 - Place `User670` folder in your Nonebot directory, the same level as your `bot.py`.
 - Run `bot.py`.
