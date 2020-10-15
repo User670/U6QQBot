@@ -1,0 +1,22 @@
+{
+	"global":{
+		"interval":30,
+		"maxcd":3600,
+		"persecondlimit":1,
+		"verbosemessage": 1234567890
+	},
+	"list":[
+		{
+			"mid":"123456",
+			"groups":{
+				"123456789":0
+			}
+		},
+		{
+			"mid":"654321",
+			"groups":{
+				"987654321":0
+			}
+		}
+	]
+}
