@@ -1,6 +1,9 @@
 # U6QQBot 
 It is a QQ bot by User670. It has limited features, but per the Mirai framework licensing, I have to open-source this project if I want to provide features to other people. I don't have much choices.
 
+# WARNING
+The SUPERUSER permission in Nonebot is a **very dangerous permission in U6QQBot, as they can run arbitrary Python and JavaScript code via commands.** Make sure you trust all SUPERUSERS.
+
 # Usage
 - Setup Mirai ( https://github.com/mamoe/mirai ) following its instructions. You also need the HTTP API.
 - Setup Nonebot ( https://github.com/nonebot/nonebot ) following its instructions. Make sure you install `pip install "nonebot[scheduler]"` when you install the dependencies.
@@ -14,6 +17,8 @@ import json as JSON
 JSON.stringify=JSON.dumps
 JSON.parse=JSON.loads
 ```
+
+In order to use the `jsace` command, you also need to install Node.js and make sure it can be accessed on the command line with `node`.
 
 # Licensing
 This project is licensed with the most strict license legally acceptable, and if there are no legal restrictions, then no license at all. I would not explicitly and manually pick a license.
