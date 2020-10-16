@@ -103,6 +103,7 @@ verbosemessage: {}""".format(
 Nickname: {}
 Status: {} (since {} ago, last updated {} ago)
 Next pull: in {} (current interval {})""".format(
+					args[1],
 					data[args[1]]["name"],
 					"Not streaming" if data[args[1]]["lastquery"][0]==0 else ("Streaming" if data[args[1]]["lastquery"][0]==1 else "Error"),
 					timediff(now, data[args[1]]["lastquery"][2]),
