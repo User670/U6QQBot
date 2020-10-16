@@ -41,7 +41,7 @@ async def report_time(session: CommandSession):
 		# u!swatch global: show current global settings
 		# u!swatch global interval 10: set global settings
 		if len(args)==1:
-			await sesson.send("""Current global settings:
+			await session.send("""Current global settings:
 interval: {}
 maxcd: {}
 persecondlimit: {}
