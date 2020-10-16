@@ -30,7 +30,7 @@ async def report_time(session: CommandSession):
 	except:
 		grpid=0
 	
-	f=open("./User670/config/streamswatchconfig.json")
+	f=open("./User670/config/streamwatchconfig.json")
 	config=JSON.parse(f.read())
 	f.close()
 	
@@ -60,7 +60,7 @@ verbosemessage: {}""".format(
 			return
 		try:
 			config["global"][args[1]]=int(args[2])
-			f=open("./User670/config/streamswatchconfig.json","w")
+			f=open("./User670/config/streamwatchconfig.json","w")
 			f.write(JSON.stringify(config))
 			f.close()
 			return
