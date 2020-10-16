@@ -123,3 +123,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Config, runtime data, Nonebot native files
+bot.py
+run.bat
+config.py
+User670/config/
+User670/data/
