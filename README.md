@@ -1,6 +1,9 @@
 # U6QQBot 
 It is a QQ bot by User670. It has limited features, but per the Mirai framework licensing, I have to open-source this project if I want to provide features to other people. I don't have much choices.
 
+# Deprecation
+***This GitHub repository will no longer be used, due to unstable connection from China. Please use https://gitee.com/user670/U6QQBot instead.***
+
 # WARNING
 The SUPERUSER permission in Nonebot is a **very dangerous permission in U6QQBot, as they can run arbitrary Python and JavaScript code via commands.** Make sure you trust all SUPERUSERS.
 
