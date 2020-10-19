@@ -71,9 +71,19 @@ verbosemessage: {}""".format(
 		# u!swatch list: list watching streamers
 		# u!swatch list 123: list groups being notified for this streamer
 		if len(args)==1:
+			f=open("./User670/data/streamwatchlog.json")
+			data=JSON.parse(f.read())
+			f.close()
 			t="Currently following these streamers: (Note: UID, not stream ID)"
 			for i in config["list"]:
-				t+="\n"+str(i["mid"])
+				t+="\n"
+				if str(grpid) in i["groups"]: t+="*"
+				if len(i["groups"])==0: t+="-"
+				t+=str(i["mid"])
+				try:
+					t+=" ({})".format(data[i["mid"]]["name"])
+				except:
+					t+=" (???)"
 			await session.send(t)
 			return
 		for i in config["list"]:
@@ -115,17 +125,125 @@ Next pull: in {} (current interval {})""".format(
 		#Streamer not found:
 		await session.send("The specified streamer is not found.")
 		return
+	elif args[0]=="sub":
+		# u!swatch sub <uid>
+		if len(args)<2:
+			await session.send("u!swatch sub <uid>")
+			return
+		try:
+			mid=str(int(args[1]))
+			config["list"].append({
+				"mid":mid,
+				"groups":{}
+			})
+		except:
+			await session.send("UID has to be an integer.")
+			return
+	elif args[0]=="unsub":
+		# u!swatch unsub <uid>
+		if len(args)<2:
+			await session.send("u!swatch unsub <uid>")
+			return
+		try:
+			mid=str(int(args[1]))
+			idx=-1
+			for i in range(len(config["list"])):
+				if config["list"][i]["mid"]==mid:
+					if len(config["list"][i]["groups"])!=0:
+						await session.send("Some groups are notified of this streamer. u!swatch unnotify them first.")
+						return
+					idx=i
+					break
+			if idx==-1:
+				await session.send("You are not subscribed to this UID.")
+				return
+			del config["list"][idx]
+		except:
+			await session.send("UID has to be an integer.")
+			return
+	elif args[0]=="notify":
+		# u!swatch notify <group|"here"> <uid>
+		if len(args)<3:
+			await session.send('u!swatch notify <group|"here"> <uid>')
+			return
+		grp=""
+		if args[1]=="here":
+			if grpid==0:
+				await session.send("You are not in a group, or we failed to obtain current group ID. Specify group number instead.")
+				return
+			grp=str(grpid)
+		else:
+			try:
+				grp=str(int(args[1]))
+			except:
+				await session.send("Group number has to be an integer.")
+				return
+		try:
+			mid=str(int(args[2]))
+			idx=-1
+			for i in range(len(config["list"])):
+				if config["list"][i]["mid"]==mid:
+					idx=i
+					break
+			if idx==-1:
+				await session.send("You are not subscribed to this UID.")
+				return
+		except:
+			await session.send("UID has to be an integer.")
+			return
+		config["list"][idx]["groups"][mid]=0
+	elif args[0]=="unnotify":
+		# u!swatch unnotify <group|"here"|"all"> <uid>
+		if len(args)<3:
+			await session.send('u!swatch unnotify <group|"here"|"all"> <uid>')
+			return
+		grp=""
+		if args[1]=="here":
+			if grpid==0:
+				await session.send("You are not in a group, or we failed to obtain current group ID. Specify group number instead.")
+				return
+			grp=str(grpid)
+		elif args[1]=="all":
+			grp="all"
+		else:
+			try:
+				grp=str(int(args[1]))
+			except:
+				await session.send("Group number has to be an integer.")
+				return
+		try:
+			mid=str(int(args[2]))
+			idx=-1
+			for i in range(len(config["list"])):
+				if config["list"][i]["mid"]==mid:
+					idx=i
+					break
+			if idx==-1:
+				await session.send("You are not subscribed to this UID.")
+				return
+		except:
+			await session.send("UID has to be an integer.")
+			return
+		if grp=="all":
+			config["list"][idx]["groups"]={}
+		else:
+			try:
+				del config["list"][idx]["groups"][grp]
+			except:
+				await session.send("An unknown error occurred.")
+				return
 	else:
-		await session.send("""Implemented features:
-u!swatch global
+		await session.send("""u!swatch global
 u!swatch global <option> <value>
 u!swatch list
 u!swatch list <uid>
 u!swatch info <uid>
-
-Unimplemented featrues:
 u!swatch sub <uid>
 u!swatch unsub <uid>
 u!swatch notify <group|"here"> <uid>
 u!swatch unnotify <group|"here"|"all"> <uid>""")
 		return
+	
+	f=open("./User670/config/streamwatchconfig.json","w")
+	f.write(JSON.stringify(config))
+	f.close()
