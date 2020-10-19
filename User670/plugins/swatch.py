@@ -61,7 +61,7 @@ verbosemessage: {}""".format(
 		try:
 			config["global"][args[1]]=int(args[2])
 			f=open("./User670/config/streamwatchconfig.json","w")
-			f.write(JSON.stringify(config))
+			f.write(JSON.stringify(config, indent=4))
 			f.close()
 			return
 		except:
@@ -245,5 +245,5 @@ u!swatch unnotify <group|"here"|"all"> <uid>""")
 		return
 	
 	f=open("./User670/config/streamwatchconfig.json","w")
-	f.write(JSON.stringify(config))
+	f.write(JSON.stringify(config, indent=4))
 	f.close()
