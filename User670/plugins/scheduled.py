@@ -339,7 +339,7 @@ async def scheduled():
 	"""
 	
 	
-	if timercheck(log["global"]["lastpull"], "interval", config["global"]["interval"]):
+	if timercheck(log["lastpull"], "interval", config["global"]["interval"]):
 		verboselog=""
 		ddnotify={}
 		for channel in config["list"]:
