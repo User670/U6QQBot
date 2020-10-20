@@ -318,13 +318,13 @@ async def scheduled():
 		  to make the socket recognize where you are and who you are.
 		  You can find relevant code in chat3.
 	"""
-	f=open("./User670/config/ddwatchconfig.json","r")
+	f=open("./User670/config/ddwatchconfig.json","r", encoding="utf-8")
 	config=JSON.parse(f.read())
 	f.close()
 	
 	verbosemessage=config["global"]["verbosemessage"]
 	
-	f=open("./User670/data/ddwatchlog.json","r")
+	f=open("./User670/data/ddwatchlog.json","r", encoding="utf-8")
 	log=JSON.parse(f.read())
 	f.close()
 	"""ddwatchlog format
