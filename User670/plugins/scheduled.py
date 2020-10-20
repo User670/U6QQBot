@@ -417,7 +417,7 @@ async def scheduled():
 					for group in config["list"][channel][uid]:
 						if group not in ddnotify.keys():
 							ddnotify[group]=""
-						ddnotify[group]+="\n"+nick+" 在 "+cname+" 开启了车队。（"+roominfo+"）
+						ddnotify[group]+="\n"+nick+" 在 "+cname+" 开启了车队。（"+roominfo+"）"
 				
 				if statuspair[0]!=statuspair[1]:
 					log[logKey]["host"][0]=foundHost
