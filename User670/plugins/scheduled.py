@@ -344,10 +344,10 @@ async def scheduled():
 		ddnotify={}
 		for channel in config["list"]:
 			cname=config["channelNameOverrides"][channel]
-			f=open("../common/dd/"+channel+"-host.json")
+			f=open("../common/dd/"+channel+"-host.json", encoding="utf-8")
 			host=JSON.parse(f.read())
 			f.close()
-			f=open("../common/dd/"+channel+"-room.json")
+			f=open("../common/dd/"+channel+"-room.json", encoding="utf-8")
 			room=JSON.parse(f.read())
 			f.close()
 			for uid in config["list"][channel]:
