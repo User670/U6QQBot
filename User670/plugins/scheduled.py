@@ -340,6 +340,7 @@ async def scheduled():
 	
 	
 	if timercheck(log["lastpull"], "interval", config["global"]["interval"]):
+		log["lastpull"]=now
 		verboselog=""
 		ddnotify={}
 		for channel in config["list"]:
@@ -420,9 +421,9 @@ async def scheduled():
 						ddnotify[group]+="\n"+nick+" 在 "+cname+" 开启了车队。（"+roominfo+"）"
 				
 				if statuspair[0]!=statuspair[1]:
-					log[logKey]["host"][0]=foundHost
-					log[logKey]["host"][1]=now
-				log[logKey]["host"][2]=now
+					log[logKey]["room"][0]=foundRoom
+					log[logKey]["room"][1]=now
+				log[logKey]["room"][2]=now
 		# I hope this doesn't turn out to be too buggy
 		if verboselog!="":
 			try:
