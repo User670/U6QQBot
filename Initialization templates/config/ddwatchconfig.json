@@ -1,0 +1,14 @@
+{
+	"global":{
+		"interval":20,
+		"verbosemessage":123456789
+	},
+	"channelNameOverrides":{
+		"3710":"测试自由模式",
+	},
+	"list":{
+		"3710":{
+			"1234567":[123456789]
+		}
+	}
+}

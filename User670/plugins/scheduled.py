@@ -18,7 +18,7 @@ async def scheduled():
 	checks.
 	
 	If the code here does not finish within a single second, it may
-	throw errors into the console. Not sure how that 
+	throw errors into the console. Not sure how that affects the bot
 	"""
 	def timercheck(lastpull, mode, parameter):
 		'''
@@ -41,7 +41,7 @@ async def scheduled():
 		
 		Returns True or False of whether it should run.
 		
-		Example:
+		Example (assuming UTC timezone):
 		
 		timercheck(0, "interval", 3600)
 			it will return True as long as current time >= 1970-01-01
@@ -283,6 +283,159 @@ async def scheduled():
 	#u6logger.log("StreamsWatch ended.")
 	
 	
+	# ***********************
+	#      Diandian Watch
+	# ***********************
+	"""This notifies streaming on a website called Diandian Kaihei
+	(y.tuwan.com).
+	
+	This requires a separate program writing files into ../common/dd
+	This separate program will not be open source.
+	
+	This also requires a config file in User670/config, and a log file
+	in User670/data.
 	
 	
+	An explanation about the separate program:
+	In short:
+		- it will connect to Diandian's chat socket,
+		- read incoming messages,
+		- for every message with `typeid:1`, dump the message into
+		  (cid)-host.json, eg `3710-host.json`
+		- for every message with `typeid:18`, dump the message into
+		  (cid)-room.json, eg `3710-room.json`
+		- The files will be in, relative to this bot, ../common/dd
+	You can figure out how to connect to the socket by exploring the source
+	code of Diandian Kaihei. Some tips:
+		- It uses socket.io. Unless you know how to do equivalent tasks in
+		  other languages/libraries, I recommend you implement your code
+		  in node.js with socket.io-client library imported.
+		- Find class `DianDianSocket` in chat0-xxx.js (where xxx are numbers),
+		  and `gloabDDSoket` in chat3-xxx.js. You'll see how this is being
+		  used to connect to the socket. (tips: the values used in the
+		  connect method call ultimately come from a GET request.)
+		- After connecting to the socket, you need to send an initlist event
+		  to make the socket recognize where you are and who you are.
+		  You can find relevant code in chat3.
+	"""
+	f=open("./User670/config/ddwatchconfig.json","r", encoding="utf-8")
+	config=JSON.parse(f.read())
+	f.close()
 	
+	verbosemessage=config["global"]["verbosemessage"]
+	
+	f=open("./User670/data/ddwatchlog.json","r", encoding="utf-8")
+	log=JSON.parse(f.read())
+	f.close()
+	"""ddwatchlog format
+	{
+		"uid@channel":{
+			"host":[status, since, lastupdated],
+			      //^ 0=no, 1=yes
+			"room":[status, since, lastupdated]
+		          //^ 0=no, 1=yes and open, 2=yes and closed
+		}
+	}
+	"""
+	
+	
+	if timercheck(log["lastpull"], "interval", config["global"]["interval"]):
+		log["lastpull"]=now
+		verboselog=""
+		ddnotify={}
+		for channel in config["list"]:
+			cname=config["channelNameOverrides"][channel]
+			f=open("../common/dd/"+channel+"-host.json", encoding="utf-8")
+			host=JSON.parse(f.read())
+			f.close()
+			f=open("../common/dd/"+channel+"-room.json", encoding="utf-8")
+			room=JSON.parse(f.read())
+			f.close()
+			for uid in config["list"][channel]:
+				logKey=uid+"@"+channel
+				if logKey not in log.keys():
+					log[logKey]={
+						"nick":"",
+						"host":[-1, 0, 0],
+						"room":[-1, 0, 0]
+					}
+				# Is this UID on mic in this channel?
+				foundHost=0
+				for i in host["data"]:
+					if i["uid"]!=int(uid):
+						continue
+					foundHost=1
+					log[logKey]["nick"]=i["nickname"]
+					break
+				nick=log[logKey]["nick"]
+				statuspair=[log[logKey]["host"][0], foundHost]
+				if statuspair[0]==-1:
+					verboselog+="\n"+logKey+"/host was being tracked the first time."
+				if statuspair==[0,1]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") is now on mic."
+					for group in config["list"][channel][uid]:
+						if group not in ddnotify.keys():
+							ddnotify[group]=""
+						ddnotify[group]+="\n"+nick+" 在 "+cname+" 上麦了。"
+				if statuspair==[1,0]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") is no longer on mic."
+				
+				if statuspair[0]!=statuspair[1]:
+					log[logKey]["host"][0]=foundHost
+					log[logKey]["host"][1]=now
+				log[logKey]["host"][2]=now
+				
+				# Is this UID hosting a room in this channel?
+				foundRoom=0
+				roominfo=""
+				for i in room["data"]:
+					if i["uid"]!=int(uid):
+						continue
+					foundRoom=i["state"]+1
+					log[logKey]["nick"]=i["nickname"]
+					roominfo=i["desc"]+" - "+i["area"]+"/"+i["level"]
+					break
+				nick=log[logKey]["nick"]
+				statuspair=[log[logKey]["room"][0], foundRoom]
+				if statuspair[0]==-1:
+					verboselog+="\n"+logKey+"/room was being tracked the first time."
+				if statuspair==[0,1]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") opened a room. ("+roominfo+")"
+					for group in config["list"][channel][uid]:
+						if group not in ddnotify.keys():
+							ddnotify[group]=""
+						ddnotify[group]+="\n"+nick+" 在 "+cname+" 开启了车队。（"+roominfo+"）"
+				if statuspair==[0,2]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") opened a room and quickly launched it. ("+roominfo+")"
+				if statuspair==[1,0]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") closed the room (from not running)."
+				if statuspair==[1,2]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") launched the room. ("+roominfo+")"
+				if statuspair==[2,0]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") closed the room (from running)."
+				if statuspair==[2,1]:
+					verboselog+="\n"+logKey+" ("+nick+"@"+cname+") closed and opened a room. ("+roominfo+")"
+					for group in config["list"][channel][uid]:
+						if group not in ddnotify.keys():
+							ddnotify[group]=""
+						ddnotify[group]+="\n"+nick+" 在 "+cname+" 开启了车队。（"+roominfo+"）"
+				
+				if statuspair[0]!=statuspair[1]:
+					log[logKey]["room"][0]=foundRoom
+					log[logKey]["room"][1]=now
+				log[logKey]["room"][2]=now
+		# I hope this doesn't turn out to be too buggy
+		if verboselog!="":
+			try:
+				await bot.send_private_msg(user_id=verbosemessage, message="Diandian Watch\n"+time.ctime()+"\n"+verboselog)
+			except:
+				u6logger.log("Scheduled -> DDwatch: send info to OP failed.")
+		for group in ddnotify:
+			try:
+				await bot.send_group_msg(group_id=group,message="点点开黑\n"+time.ctime()+"\n"+ddnotify[group])
+			except:
+				u6logger.log("Scheduled -> DDwatch: send info to group failed.")
+		
+		f=open("./User670/data/ddwatchlog.json","w")
+		f.write(JSON.stringify(log))
+		f.close()
