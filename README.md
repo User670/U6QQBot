@@ -1,5 +1,8 @@
 # U6QQBot 
-It is a QQ bot by User670. It has limited features, but per the Mirai framework licensing, I have to open-source this project if I want to provide features to other people. I don't have much choices.
+It is a QQ bot by User670. It has limited features,~~but per the Mirai framework licensing, I have to open-source this project if I want to provide features to other people. I don't have much choices.~~ 
+
+# Discontinued
+***This project is no longer open-source, due to Mirai actually does not require this project to be open-source. (See https://github.com/mamoe/mirai/issues/657 ). This repository is for archival purposes only.***
 
 # Deprecation
 ***This GitHub repository will no longer be used, due to unstable connection from China. Please use https://gitee.com/user670/U6QQBot instead.***
@@ -24,6 +27,4 @@ JSON.parse=JSON.loads
 In order to use the `jsace` command, you also need to install Node.js and make sure it can be accessed on the command line with `node`.
 
 # Licensing
-This project is licensed with the most strict license legally acceptable, and if there are no legal restrictions, then no license at all. I would not explicitly and manually pick a license.
-
-Mirai, a dependency of this project, uses the GNU Affero General Public License. It is unclear whether this project falls in the scope of said license's limitations and is forced to apply the same license. This is also the reason why I did not pick a license in order to not risk over-licensing past necessity. For safety's sake, before you use this project, you might want to consider open-sourcing your project or consulting your lawyer.
+This project **does not have a public license.**
