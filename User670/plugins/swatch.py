@@ -191,7 +191,7 @@ Next pull: in {} (current interval {})""".format(
 		except:
 			await session.send("UID has to be an integer.")
 			return
-		config["list"][idx]["groups"][mid]=0
+		config["list"][idx]["groups"][grp]=0
 	elif args[0]=="unnotify":
 		# u!swatch unnotify <group|"here"|"all"> <uid>
 		if len(args)<3:
